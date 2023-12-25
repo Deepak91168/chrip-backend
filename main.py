@@ -3,10 +3,10 @@ from pymongo import MongoClient
 from pydantic import BaseModel
 from models.user import User
 from db.connectMongo import collection
-from routes.userRoute import userRoute
+from routes.authRoute import authRoute
 app = FastAPI()
 
-app.include_router(userRoute)
+app.include_router(authRoute)
 
 
 

@@ -4,19 +4,19 @@ from datetime import datetime, timedelta
 from dotenv import dotenv_values
 import jwt
 config = dotenv_values("./.env")
-# try:
-#     if config:
-#         print("Environment variables loaded successfully:")
-#         for key, value in config.items():
-#             print(f"{key}={value}")
-#     else:
-#         print("No environment variables found in the .env file.")
-# except Exception as e:
-#     print(f"Error loading environment variables: {e}")
+try:
+    if config:
+        print("Environment variables loaded successfully:")
+        for key, value in config.items():
+            print(f"{key}={value}")
+    else:
+        print("No environment variables found in the .env file.")
+except Exception as e:
+    print(f"Error loading environment variables: {e}")
 
 SECRET_KEY = config.get("SECRET_KEY")
 ALGORITHM = config.get("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = config.get("ACCESS_TOKEN_EXPIRE_MINUTES")
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 def create_access_token(email: str):

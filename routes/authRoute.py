@@ -6,9 +6,9 @@ from utils.auth.token import create_access_token, decode_token
 from middlewares.auth.isAuthenticated import isAuthenticated
 from datetime import datetime, timedelta
 
-userRoute = APIRouter()
+authRoute = APIRouter()
 
-@userRoute.post("/sign-up")
+@authRoute.post("/sign-up")
 async def create_user(user: User):
     user_dict = user.dict()
     if(collection.find_one({"email": user_dict["email"]})):
@@ -19,7 +19,7 @@ async def create_user(user: User):
         result = collection.insert_one(user_dict)
         return {"User created with id": str(user_dict_without_password)}
 
-@userRoute.post("/login")
+@authRoute.post("/login")
 async def login_user(response: Response,user: User):
     user_dict = user.dict()
     user_in_db = collection.find_one({"email": str(user_dict["email"])})
@@ -34,7 +34,9 @@ async def login_user(response: Response,user: User):
         return HTTPException(status_code=400, detail="Email not found")
 
 
-@userRoute.get("/get-all-users", dependencies=[Depends(isAuthenticated)])
+
+
+@authRoute.get("/get-all-users", dependencies=[Depends(isAuthenticated)])
 async def get_all_users():
     print("executing get_all_users")
     users = []
