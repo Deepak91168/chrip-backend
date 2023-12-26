@@ -18,6 +18,7 @@ MONGO_URL = config.get("MONGODB_URL")
 
 client = MongoClient(MONGO_URL)
 db = client["Chirp"]
-collection = db["users"]
+user_collection = db["users"]
+conversation_collection = db["conversations"]
 print("connected to db")
 
