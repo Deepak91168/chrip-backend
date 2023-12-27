@@ -8,6 +8,8 @@ from routes.userRoute import userRoute
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 from schema.messageSchema import Message
+from routes.chatRoutes import chatRoute
+
 import json
 
 app = FastAPI()
@@ -21,6 +23,7 @@ app.add_middleware(
 
 app.include_router(authRoute)
 app.include_router(userRoute)
+app.include_router(chatRoute)
 
 active_connections: Dict[str, WebSocket] = {}
 
@@ -31,12 +34,6 @@ def save_message_to_db(message: Message):
     print(f"result:{result.inserted_id}")
 
 
-def get_chat_history(sender_email: str, recipient_email: str):
-    chat_history = conversation_collection.find(
-        {"$or": [{"sender_email": sender_email, "recipient_email": recipient_email},
-                 {"sender_email": recipient_email, "recipient_email": sender_email}]})
-    return chat_history
-
 @app.websocket("/ws/{user_email}")
 async def websocket_endpoint(websocket: WebSocket, user_email: str):
     await websocket.accept()
@@ -44,6 +41,7 @@ async def websocket_endpoint(websocket: WebSocket, user_email: str):
     if user_email in active_connections:
         print(active_connections[user_email])
         print("user is online")
+        
     try:
         while True:
             message = await websocket.receive_json(mode='text')
