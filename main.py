@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from pymongo import MongoClient
 from pydantic import BaseModel
-from models.user import User
+from models.user import User, LoginUser
 from db.connectMongo import user_collection, conversation_collection
 from routes.authRoute import authRoute
 from routes.userRoute import userRoute

@@ -1,4 +1,4 @@
-from models.user import User
+from models.user import User, LoginUser
 from db.connectMongo import user_collection
 from fastapi import APIRouter,Depends, HTTPException, Response, Request
 from utils.security.security import hash_password, verify_password
@@ -6,6 +6,8 @@ from utils.auth.token import create_access_token, decode_token
 from middlewares.auth.isAuthenticated import isAuthenticated
 from datetime import datetime, timedelta
 from schema.google_auth import GoogleLoginRequestUser
+from fastapi.responses import JSONResponse
+import json
 
 authRoute = APIRouter()
 
@@ -21,19 +23,21 @@ async def create_user(user: User):
         return {"User created with id": str(user_dict_without_password)}
 
 @authRoute.post("/auth/login")
-async def login_user(response: Response,user: User):
+async def login_user(response: Response,user: LoginUser):
     user_dict = user.dict()
     user_in_db = user_collection.find_one({"email": str(user_dict["email"])})
     if user_in_db:
         if verify_password(user_dict["password"], user_in_db["password"]):
             access_token = create_access_token(user_dict["email"])
             response.set_cookie(key="access_token", value=access_token, max_age=30*24*60*60, httponly=True)
-            return {"access_token": access_token}
+            print(user_in_db)
+            currentUser = json.dumps(user_in_db)
+            return {"currentUser": user_in_db}
+            # return {"access_token": access_token}
         else:
             return HTTPException(status_code=400, detail="Incorrect password")
     else:
         return HTTPException(status_code=400, detail="Email not found")
-
 
 @authRoute.post("/continue-with-google")
 async def continue_with_google(request: Request, response: Response,user: GoogleLoginRequestUser):

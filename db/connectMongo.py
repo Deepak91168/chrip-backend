@@ -6,8 +6,8 @@ config = dotenv_values(".env")
 try:
     if config:
         print("Environment variables loaded successfully:")
-        # for key, value in config.items():
-        #     print(f"{key}={value}")
+        for key, value in config.items():
+            print(f"{key}={value}")
     else:
         print("No environment variables found in the .env file.")
 except Exception as e:
