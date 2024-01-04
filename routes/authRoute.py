@@ -34,7 +34,6 @@ async def login_user(response: Response,user: LoginUser):
                 user_in_db["_id"] = str(user_in_db["_id"])
             currentUser = user_in_db
             return currentUser
-            # return {"access_token": access_token}
         else:
             return HTTPException(status_code=400, detail="Incorrect password")
     else:
