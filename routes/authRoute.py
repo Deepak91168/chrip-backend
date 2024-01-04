@@ -6,8 +6,6 @@ from utils.auth.token import create_access_token, decode_token
 from middlewares.auth.isAuthenticated import isAuthenticated
 from datetime import datetime, timedelta
 from schema.google_auth import GoogleLoginRequestUser
-from fastapi.responses import JSONResponse
-import json
 
 authRoute = APIRouter()
 
@@ -31,8 +29,11 @@ async def login_user(response: Response,user: LoginUser):
             access_token = create_access_token(user_dict["email"])
             response.set_cookie(key="access_token", value=access_token, max_age=30*24*60*60, httponly=True)
             print(user_in_db)
-            currentUser = json.dumps(user_in_db)
-            return {"currentUser": user_in_db}
+            user_in_db.pop("password")
+            if "_id" in user_in_db and isinstance(user_in_db["_id"], ObjectId):
+                user_in_db["_id"] = str(user_in_db["_id"])
+            currentUser = user_in_db
+            return currentUser
             # return {"access_token": access_token}
         else:
             return HTTPException(status_code=400, detail="Incorrect password")
