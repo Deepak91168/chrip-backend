@@ -6,7 +6,7 @@ from utils.auth.token import create_access_token, decode_token
 from middlewares.auth.isAuthenticated import isAuthenticated
 from datetime import datetime, timedelta
 from schema.google_auth import GoogleLoginRequestUser
-
+from bson import ObjectId
 authRoute = APIRouter()
 
 @authRoute.post("/auth/sign-up")
